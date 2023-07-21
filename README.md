@@ -1,4 +1,3 @@
-```markdown
 # PDF Search Engine with Streamlit, ChromaDB, and AWS SageMaker using jumpstart-dft-meta-textgeneration-llama-2-7b-f
 
 This project is a simple search engine for PDF files. It uses Streamlit for the web interface, ChromaDB for storing and querying document embeddings, and AWS SageMaker for generating responses to user queries.
