@@ -26,15 +26,21 @@ def get_embeddings(text):
 
 # Upload page  
 def upload_page(collection, file_id, page_num, page_text):
-  embeddings = get_embeddings(page_text)
-  page_embedding = np.mean(embeddings, axis=0).tolist()
+  if page_text.strip():  # Check if the page text is not empty
+    embeddings = get_embeddings(page_text)
+    if embeddings:  # Check if embeddings were generated
+      page_embedding = np.mean(embeddings, axis=0).tolist()
+      collection.add(
+        documents=[page_text],
+        metadatas=[{"file_id": file_id, "page": page_num}],
+        ids=[f"{file_id}_page{page_num}"],
+        embeddings=[page_embedding]
+      )
+    else:
+      print(f"No embeddings generated for page {page_num} in file {file_id}.")
+  else:
+    print(f"Page {page_num} in file {file_id} is empty or contains only images.")
 
-  collection.add(
-    documents=[page_text],
-    metadatas=[{"page": page_num}],
-    ids=[f"{file_id}_page{page_num}"],
-    embeddings=[page_embedding]
-  )
 
 # Query endpoint
 def query_endpoint(payload):
