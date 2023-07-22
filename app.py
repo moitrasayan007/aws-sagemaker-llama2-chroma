@@ -57,7 +57,7 @@ def query_endpoint(payload):
 
 # Streamlit UI and app flow
 def main():
-
+  st.title('Just A Rather Very Intelligent System (J.A.R.V.I.S)')
   # Check if the collection exists, if not create it
   if 'pdf_pages' not in chroma_client.list_collections():
     try:
