@@ -9,9 +9,6 @@ import numpy as np
 from nltk.tokenize import sent_tokenize
 import time
 
-# Download the Punkt tokenizer
-nltk.download('punkt')
-
 # Initialize clients
 chroma_client = Client()
 endpoint_name = "jumpstart-dft-meta-textgeneration-llama-2-7b-f"
