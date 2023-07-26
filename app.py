@@ -38,7 +38,6 @@ def upload_page(collection, file_id, page_num, page_text):
   else:
     print(f"Page {page_num} in file {file_id} is empty or contains only images.")
 
-
 # Query endpoint
 def query_endpoint(payload):
     client = boto3.client("sagemaker-runtime")
@@ -52,9 +51,15 @@ def query_endpoint(payload):
     response = json.loads(response)
     return response
 
+# Get entities using Amazon Comprehend
+def get_entities(text):
+    comprehend = boto3.client(service_name='comprehend', region_name='us-east-1')
+    entities = comprehend.detect_entities(Text=text, LanguageCode='en')
+    return [entity['Text'] for entity in entities['Entities'] if entity['Type'] != 'PERSON']
+
 # Streamlit UI and app flow
 def main():
-  st.title('Just A Rather Very Intelligent System (J.A.R.V.I.S)')
+  st.title('Semantic Hypothesis And Reasoning In Natural language Generative AI Networks (S.H.A.R.I.N.G.A.N)')
   # Check if the collection exists, if not create it
   if 'pdf_pages' not in chroma_client.list_collections():
     try:
@@ -94,8 +99,27 @@ def main():
             "parameters": {"max_new_tokens": 500, "top_p": 0.9, "temperature": 0.6}
         }
         result = query_endpoint(payload)[0]
-        st.write(f"> {result['generation']['role'].capitalize()}: {result['generation']['content']}")
-        st.write("\n==================================\n")
+        response = result['generation']['content']
+        
+        # Get entities from the response and generate prompts
+        entities = get_entities(response)
+        prompts = []
+        for i, entity in enumerate(entities):
+            if i == 0:
+                prompts.append(f"Can you provide more details about {entity}?")
+            elif i == 1:
+                prompts.append(f"What do you mean by {entity}?")
+            elif i == 2:
+                prompts.append(f"Can you summarize the main points of {entity}?")
+            else:
+                break 
+               # Stop after generating 3 prompts
+               
+        st.write(f"> {result['generation']['role'].capitalize()}: {response}")
+        if prompts:
+            st.write("\n==================================\n")
+            st.write("\n".join([f"{i+1}. {prompt}" for i, prompt in enumerate(prompts)]))
+        
     else:
         st.write("No matching documents found for the query.")
 

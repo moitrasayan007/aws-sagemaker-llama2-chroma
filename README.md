@@ -6,7 +6,7 @@ This project is a simple search engine for PDF files. It uses Streamlit for the 
 
 Here is the architecture diagram for the PDF Search Engine:
 
-![Architecture Diagram](https://showme.redstarplugin.com/d/NUnagOxA)
+![Architecture Diagram](./llama2-genai.png)
 
 ## Prerequisites
 
